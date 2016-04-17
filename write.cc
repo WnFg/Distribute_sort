@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-int t = 50;
+int t = 50000;
 
 int main()
 {

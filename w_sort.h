@@ -47,12 +47,16 @@ void __sort(FILE*& inFile, int l, int mid, int r, FILE*& outFile) {
 
 			fwrite(B, 4, countB, outFile);
 			B_cur = 0;
+			
+			fflush(outFile);
 			continue;
 		}
 
 		if(countB == 0) {
 			fwrite(A, 4, countA, outFile);
 			A_cur = 0;
+			
+			fflush(outFile);
 			continue;
 		}
 		
@@ -89,6 +93,7 @@ void __sort(FILE*& inFile, int l, int mid, int r, FILE*& outFile) {
 		}
 
 		fwrite(C, 4, cnt, outFile);
+		fflush(outFile);
 	}
 }
 
@@ -107,6 +112,7 @@ void out_sort(FILE*& in, FILE*& out, int size)
 		std::sort(C, C + cnt);
 		sum += cnt;
 		fwrite(C, 4, cnt, out);
+		fflush(out);
 	}while(cnt);
 	
 	std::swap(in, out);
@@ -125,6 +131,7 @@ void out_sort(FILE*& in, FILE*& out, int size)
 		do{
 			cnt = fread(C, 4, maxNum_Obj*2, in);
 			fwrite(C, 4, cnt, out);
+			fflush(out);
 		}while(cnt);	
 
 		limit -= limit / 2;

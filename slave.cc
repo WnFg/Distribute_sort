@@ -11,15 +11,9 @@
 #define ip "127.0.0.1"
 #define svPort 1111
 
-#define maxBufSize 550
+#define maxBufSize 10000
 
-char buf[maxBufSize];
-
-/*void createFile(char* path)
-{
-	FILE* p = fopen(path, "a");
-	close(p);
-}*/
+char buf[maxBufSize + 100];
 
 fileStat_type fileStat;
 
@@ -80,13 +74,20 @@ int main(int argc, char** argv)
 				printf("asdqw: %d\n", count);
 				fwrite(buf, 1, count, file);
 				sum += count;
+				fflush(file);
 			}while(count >= maxBufSize);
+			
 			if(!fileStat.size)
 				fileStat.stat = -1;
 			else
 				fileStat.stat = 1;
 			fileStat.mid = fileStat.size;
 			fileStat.size += sum;
+			
+	/*		if(fileStat.size == 400000) {
+				printf("qwesasdxcv\n");
+				exit(-1);
+			}*/
 
 			close(sourceFd);
 			fclose(file);
@@ -104,6 +105,7 @@ int main(int argc, char** argv)
 			printf("fileStat: %d\n", fileStat.stat);
 			printf("%s\n", p->path);
 			printf("%d %d\n", fileStat.mid, fileStat.size);
+			
 			if(fileStat.stat != 0)
 				if((pid = fork()) != 0) {
 					waitpid(pid, NULL, 0);

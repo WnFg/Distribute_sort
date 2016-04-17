@@ -26,7 +26,7 @@ int main(int argc, char** argv)
 	
 	if(!strcmp(argv[1], "0")) {
 		if(argc == 3) {
-			out = getRandomFile(randomFile, "wb+");
+			out = getRandomFile(randomFile, "wb+", argv[2]);
 		}else {
 			out = fopen(argv[3], "wb+");
 		}
@@ -38,11 +38,7 @@ int main(int argc, char** argv)
 			out_sort(in, out, size);
 		}
 	}else {
-		//if(argc == 3) {
-			out = getRandomFile(randomFile, "wb+");
-	//	}//else {
-	//		out = fopen(argv[3], "wb+");
-	//	}
+		out = getRandomFile(randomFile, "wb+", argv[2]);
 		__sort(in, 0, getIntFromStr(argv[3]), getIntFromStr(argv[4]), out);
 	}
 	

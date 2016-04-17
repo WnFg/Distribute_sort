@@ -9,6 +9,7 @@
 #include <sys/sendfile.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include "IO.h"
 
 typedef int fileFd_type;
 typedef int sockFd_type;
@@ -63,9 +64,13 @@ inline char getCh(int x) {
 	return 'A' + x - 36;
 }
 
-std::string getRandomSign(int len) {
+std::string getRandomSign(int len, int seed = -1) {
 	time_t t;
-	srand((unsigned) time(&t));
+	if(seed == -1)
+		time(&t);
+	else
+		t = seed;
+	srand((unsigned) t);
 	
 	std::string ans;
 	
@@ -77,7 +82,25 @@ std::string getRandomSign(int len) {
 
 FILE* getRandomFile(std::string& fileName, const char* mode) {
 	fileName = getRandomSign(20);
-	FILE* p = fopen(fileName.c_str(), "a");
+	FILE* p = fopen(fileName.c_str(), "a+");
+	if(p == NULL)
+		return NULL;
+
+	fclose(p);
+	p = fopen(fileName.c_str(), mode);
+	return p;
+}
+
+FILE* getRandomFile(std::string& fileName, const char* mode, std::string s) {
+	int seed = 0;
+	for(int i = 0; i < s.size(); i++) {
+		seed *= 3;
+		seed += s[i];
+	}
+
+	fileName = getStrFromInt(seed);
+	FILE* p = fopen(fileName.c_str(), "a+");
+	
 	if(p == NULL)
 		return NULL;
 
