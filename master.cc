@@ -12,22 +12,19 @@
 #include <string.h>
 
 #define ip "127.0.0.1"
-#define svPort 1111
+#define port 1111
+#define slave_num 4
 
 void* phase_3_2(void* argv);
 void readyData(void* argv);
 void* phase_sort(void* argv);
 int min(int x, int y);
-
-#define slave_num 4
-#define ip "127.0.0.1"
-#define port 1111
+int waitSignal(int fd, int count = 1);
 
 std::queue<int> sortedSlave;
 int lived_slave = slave_num;
 int slaveFd[slave_num];
 inetAddr_type slave_addr[slave_num];
-int waitSignal(int fd, int count = 1);
 
 pthread_mutex_t mtx = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
