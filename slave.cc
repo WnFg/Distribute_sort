@@ -34,7 +34,6 @@ int main(int argc, char** argv)
 	//int order;
 	while(true) {
 		while(recv(masterFd, cmd, 4, MSG_WAITALL) != 4);
-		
 		if(*(int*)cmd == 0) {				
 			int len = sizeof(Cmd_2) - 4;
 			
@@ -52,14 +51,11 @@ int main(int argc, char** argv)
 			close(destFd);
 			write(masterFd, "1", 1);
 		}else if(*(int*)cmd == 1) {
-			printf("zxcweff\n");
 			int len = sizeof(Cmd_1) - 4;
 			
 			while(recv(masterFd, (char*)cmd + 4, len, MSG_WAITALL) != len);
 
 			Cmd_1* p = static_cast<Cmd_1*>(cmd);
-			printf("%d	recv\n", p->addr.sin_addr.s_addr);
-			printf("%d  recv\n", p->addr.sin_port);
 			int sourceFd = getFd_and_connect(p->addr);
 			
 			int count;
@@ -71,7 +67,6 @@ int main(int argc, char** argv)
 			int sum = 0;
 			do{
 				count = __rio_read(sourceFd, buf, maxBufSize);
-				printf("asdqw: %d\n", count);
 				fwrite(buf, 1, count, file);
 				sum += count;
 				fflush(file);
@@ -84,27 +79,20 @@ int main(int argc, char** argv)
 			fileStat.mid = fileStat.size;
 			fileStat.size += sum;
 			
-	/*		if(fileStat.size == 400000) {
-				printf("qwesasdxcv\n");
-				exit(-1);
-			}*/
-
 			close(sourceFd);
 			fclose(file);
 			write(masterFd, "1", 1);
 		}else {
 			// 排序
-			printf("qweqwe\n");
 			int len = sizeof(Cmd_3) - 4;
 			
 			while(recv(masterFd, (char*)cmd + 4, len, MSG_WAITALL) != len);
 			
 			Cmd_3* p = static_cast<Cmd_3*>(cmd);
 			
+			printf("sorting: %s\n", p->path);
+			printf("fileStat: %d, fileSize: %d\n", fileStat.stat, fileStat.size);
 			int pid;
-			printf("fileStat: %d\n", fileStat.stat);
-			printf("%s\n", p->path);
-			printf("%d %d\n", fileStat.mid, fileStat.size);
 			
 			if(fileStat.stat != 0)
 				if((pid = fork()) != 0) {

@@ -49,11 +49,9 @@ void solve() {
 	while(lived_slave > 1) {
 		pthread_mutex_lock(&mtx);
 		
-	//	printf("qweqweqew\n");
 		while(sortedSlave.size() < 2)
 			pthread_cond_wait(&cond, &mtx);
 		
-	//	printf("zxczxcqwe\n");
 		while(sortedSlave.size() >= 2) {
 			cmd_1_2* cmd = new cmd_1_2;
 			memset(cmd, 0, sizeof(cmd_1_2));
@@ -62,17 +60,9 @@ void solve() {
 			cmd->recvSlave = sortedSlave.front();
 			sortedSlave.pop();
 			
-	//		printf("%d vv\n", cmd->sendSlave);
-	//		printf("%d bb\n", cmd->recvSlave);
-
-	//		printf("%s cc\n", filePath[cmd->sendSlave]);
-			
-	//		sleep(3);
 			cmd->cmd2.order = 0;
 			strcpy(cmd->cmd2.path, filePath[cmd->sendSlave]);
 			
-	//		printf("%s qqq\n", cmd->cmd2.path);
-
 			cmd->cmd1.order = 1;
 			cmd->cmd1.addr = slave_addr[cmd->sendSlave];
 			strcpy(cmd->cmd1.path, filePath[cmd->recvSlave]);
@@ -104,10 +94,9 @@ int main(int argc, char** argv)
 }
 
 void* phase_sort(void* argv) {
+	
 	sortCmd_type cmd = *static_cast<sortCmd_type*>(argv);
 	
-	//delete (sortCmd_type*)argv;
-
 	write(slaveFd[cmd.first], &cmd.second, sizeof(cmd.second));
 	
 	char ok;
@@ -125,24 +114,17 @@ void* phase_sort(void* argv) {
 }
 
 void* phase_3_2(void* argv) {
+	
 	cmd_1_2* cmd = (cmd_1_2*)argv;
-	//printf("phase_3_2\n");
-	//printf("%d %d bbbb\n", cmd->cmd1.addr.sin_addr.s_addr, cmd->cmd1.addr.sin_port);
-	//exit(0);
 	write(slaveFd[cmd->sendSlave], &cmd->cmd2, sizeof(cmd->cmd2));
-	//sleep(3);
-	//printf("jie duan: 1 \n");
 	write(slaveFd[cmd->recvSlave], &cmd->cmd1, sizeof(cmd->cmd1));
 	
-	//printf("jie duan: 2 \n");
 	char ok1, ok2;
 
 	if(recv(slaveFd[cmd->sendSlave], &ok1, 1, MSG_WAITALL) != 1 ||
 	   recv(slaveFd[cmd->recvSlave], &ok2, 1, MSG_WAITALL) != 1)
 		exit(-1);
 	
-	printf("complete\n");
-	//sleep(3);
 	Cmd_3 c3;
 	c3.order = 2;
 	strcpy(c3.path, cmd->cmd1.path);
@@ -183,17 +165,16 @@ void readyData(void* argv) {
 		close(fd);
 	}
 	close(fileFd);
-//	exit(0);
 	pthread_t tt;
 	for(int i = 0; i < slave_num; i++) {
 		if(waitSignal(i) != 1)
 			exit(-1);
+		
 		sortCmd_type* c3 = new sortCmd_type;
 		c3->first = i;
 		c3->second.order = 2;
 		strcpy(c3->second.path, filePath[i]);
 		pthread_create(&tt, NULL, phase_sort, c3);
-	//	sleep(5);
 	}
 }
 

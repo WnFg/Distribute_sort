@@ -5,7 +5,7 @@ int a[1000000];
 
 int main()
 {
-	FILE *file = fopen("qwe0", "r+");
+	FILE *file = fopen("qwe3", "r+");
 	if(file == NULL) {
 		exit(-1);
 	}
