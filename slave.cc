@@ -11,7 +11,7 @@
 #define ip "127.0.0.1"
 #define svPort 1111
 
-#define maxBufSize 10000
+#define maxBufSize 5000000
 
 char buf[maxBufSize + 100];
 
@@ -90,13 +90,14 @@ int main(int argc, char** argv)
 			
 			Cmd_3* p = static_cast<Cmd_3*>(cmd);
 			
-			printf("sorting: %s\n", p->path);
-			printf("fileStat: %d, fileSize: %d\n", fileStat.stat, fileStat.size);
 			int pid;
-			
 			if(fileStat.stat != 0)
 				if((pid = fork()) != 0) {
 					waitpid(pid, NULL, 0);
+					
+					printf("sorted: %s\n", p->path);
+					printf("fileStat: %d, fileSize: %d\n", fileStat.stat, fileStat.size);
+					
 					fileStat.stat = 0;
 					write(masterFd, "1", 1);
 					continue;

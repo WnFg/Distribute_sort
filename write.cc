@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-int t = 200000;
+int t = 5000000;
 
 int main()
 {
