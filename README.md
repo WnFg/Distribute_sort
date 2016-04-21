@@ -22,4 +22,11 @@ slave.cc： slave节点的程序代码。
 
 sort.cc：  排序算法。数据量较小时使用快速排序，数据量大时，使用外部的两路归并排序。
 
+###程序流程说明
 
+![flow](https://github.com/WnFg/Distribute_sort/blob/master/image/flow.png)
+
+流程图:
+![flow2](https://github.com/WnFg/Distribute_sort/blob/master/image/flow2.png)
+
+阶段③数据转移中，当发送数据的slave节点完成发送任务后，将不在参与后续任务（可以认为是休眠）。这样在每次数据转移时，存活的slave节点总是会减少的，即上述流程图总会到达【排序完成】节点。
