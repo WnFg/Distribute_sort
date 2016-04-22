@@ -98,10 +98,8 @@ void* phase_sort(void* argv) {
 	sortCmd_type cmd = *static_cast<sortCmd_type*>(argv);
 	
 	write(slaveFd[cmd.first], &cmd.second, sizeof(cmd.second));
-	
-	char ok;
 
-	if(recv(slaveFd[cmd.first], &ok, 1, MSG_WAITALL) != 1)
+	if(waitSignal(cmd.first) != 1)
 		exit(-1);
 	
 	pthread_mutex_lock(&mtx);
@@ -118,11 +116,9 @@ void* phase_3_2(void* argv) {
 	cmd_1_2* cmd = (cmd_1_2*)argv;
 	write(slaveFd[cmd->sendSlave], &cmd->cmd2, sizeof(cmd->cmd2));
 	write(slaveFd[cmd->recvSlave], &cmd->cmd1, sizeof(cmd->cmd1));
-	
-	char ok1, ok2;
 
-	if(recv(slaveFd[cmd->sendSlave], &ok1, 1, MSG_WAITALL) != 1 ||
-	   recv(slaveFd[cmd->recvSlave], &ok2, 1, MSG_WAITALL) != 1)
+	if(waitSignal(cmd->sendSlave) != 1 ||
+	   waitSignal(cmd->recvSlave) != 1)
 		exit(-1);
 	
 	Cmd_3 c3;
@@ -180,8 +176,8 @@ void readyData(void* argv) {
 
 int waitSignal(int fd, int count) {
 	fd = slaveFd[fd];
-	char ok[10];
-	return recv(fd, ok, count, MSG_WAITALL);
+	char ok;
+	return recv(fd, &ok, count, MSG_WAITALL);
 }
 
 int min(int x, int y) {
